@@ -21,6 +21,8 @@ fun NotificationManager.sendNotification(
     applicationContext: Context
 ) {
     val contentIntent = Intent(applicationContext, DetailActivity::class.java)
+    contentIntent.putExtra("status", status)
+    contentIntent.putExtra("file_name", fileName)
     val contentPendingIntent = PendingIntent.getActivity(
         applicationContext,
         NOTIFICATION_ID,

@@ -21,6 +21,10 @@
     <string name="download">Download</string>
     <string name="loading">We are loading</string>
 
+    <string name="button_ok">OK</string>
+
+    <string name="label_file_name">File name:</string>
+    <string name="label_status">Status:</string>
 
     <string name="status_none">None</string>
     <string name="status_failed">FAILED</string>

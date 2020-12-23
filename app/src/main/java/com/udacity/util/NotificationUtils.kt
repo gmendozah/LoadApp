@@ -5,31 +5,27 @@ import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import androidx.core.app.NotificationCompat
+import com.udacity.DetailActivity
 import com.udacity.MainActivity
 import com.udacity.R
-import com.udacity.receiver.DetailReceiver
 
 // Notification ID.
 private val NOTIFICATION_ID = 0
 private val REQUEST_CODE = 0
 private val FLAGS = 0
 
-fun NotificationManager.sendNotification(channelId: String, applicationContext: Context) {
-    val contentIntent = Intent(applicationContext, MainActivity::class.java)
+fun NotificationManager.sendNotification(
+    fileName: String,
+    status: String,
+    channelId: String,
+    applicationContext: Context
+) {
+    val contentIntent = Intent(applicationContext, DetailActivity::class.java)
     val contentPendingIntent = PendingIntent.getActivity(
         applicationContext,
         NOTIFICATION_ID,
         contentIntent,
         PendingIntent.FLAG_UPDATE_CURRENT
-    )
-
-    //set action
-    val detailIntent = Intent(applicationContext, DetailReceiver::class.java)
-    val pendingIntent: PendingIntent = PendingIntent.getBroadcast(
-        applicationContext,
-        REQUEST_CODE,
-        detailIntent,
-        FLAGS
     )
 
     // Build the notification
@@ -51,7 +47,7 @@ fun NotificationManager.sendNotification(channelId: String, applicationContext: 
         .addAction(
             R.drawable.ic_assistant_black_24dp,
             applicationContext.getString(R.string.notification_button),
-            pendingIntent
+            contentPendingIntent
         )
         .setPriority(NotificationCompat.PRIORITY_HIGH)
     notify(NOTIFICATION_ID, builder.build())

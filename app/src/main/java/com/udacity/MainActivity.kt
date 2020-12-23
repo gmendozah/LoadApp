@@ -14,6 +14,7 @@ import android.widget.RadioButton
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.NotificationCompat
+import com.udacity.util.sendNotification
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.content_main.*
 import timber.log.Timber
@@ -33,12 +34,15 @@ class MainActivity : AppCompatActivity() {
             when (view.getId()) {
                 R.id.radioOptionGlide -> {
                     selectedURL = URL_GLIDE
+                    custom_button.setButtonState(ButtonState.Loading)
                 }
                 R.id.radioOptionLoadApp -> {
                     selectedURL = URL_STARTER
+                    custom_button.setButtonState(ButtonState.Loading)
                 }
                 R.id.radioOptionRetrofit -> {
                     selectedURL = URL_RETROFIT
+                    custom_button.setButtonState(ButtonState.Loading)
                 }
             }
         }
@@ -63,6 +67,17 @@ class MainActivity : AppCompatActivity() {
     private val receiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
             val id = intent?.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, -1)
+            context?.let {
+                // set button state to completed
+                custom_button.setButtonState(ButtonState.Completed)
+                // send notification
+                notificationManager.sendNotification(
+                    "",
+                    "",
+                    CHANNEL_ID,
+                    context,
+                )
+            }
         }
     }
 
@@ -77,7 +92,7 @@ class MainActivity : AppCompatActivity() {
 
         val downloadManager = getSystemService(DOWNLOAD_SERVICE) as DownloadManager
         downloadID =
-            downloadManager.enqueue(request)// enqueue puts the download request in the queue.
+            downloadManager.enqueue(request)// enqueue puts download request in the queue.
     }
 
     companion object {

@@ -69,12 +69,12 @@ class MainActivity : AppCompatActivity() {
                 // set button state to completed
                 custom_button.setButtonState(ButtonState.Completed)
                 // send notification
-                notificationManager.sendNotification(
+                /*notificationManager.sendNotification(
                     "",
                     "",
                     CHANNEL_ID,
                     context,
-                )
+                )*/
             }
         }
     }

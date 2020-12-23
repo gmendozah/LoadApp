@@ -40,11 +40,12 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/option_glide"
-            android:textSize="18sp"/>
+            android:textSize="18sp"
+            android:onClick="onRadioButtonClicked"/>
 
         <Space
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="16dp"
             android:layout_weight="1"/>
 
         <RadioButton
@@ -52,11 +53,12 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/option_load_app"
-            android:textSize="18sp"/>
+            android:textSize="18sp"
+            android:onClick="onRadioButtonClicked"/>
 
         <Space
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="16dp"
             android:layout_weight="1"/>
 
         <RadioButton
@@ -64,7 +66,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/option_retrofit"
-            android:textSize="18sp"/>
+            android:textSize="18sp"
+            android:onClick="onRadioButtonClicked"/>
     </RadioGroup>
 
     <com.udacity.LoadingButton

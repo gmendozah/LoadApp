@@ -34,15 +34,12 @@ class MainActivity : AppCompatActivity() {
             when (view.getId()) {
                 R.id.radioOptionGlide -> {
                     selectedURL = URL_GLIDE
-                    custom_button.setButtonState(ButtonState.Loading)
                 }
                 R.id.radioOptionLoadApp -> {
                     selectedURL = URL_STARTER
-                    custom_button.setButtonState(ButtonState.Loading)
                 }
                 R.id.radioOptionRetrofit -> {
                     selectedURL = URL_RETROFIT
-                    custom_button.setButtonState(ButtonState.Loading)
                 }
             }
         }
@@ -57,6 +54,7 @@ class MainActivity : AppCompatActivity() {
 
         custom_button.setOnClickListener {
             if (this::selectedURL.isInitialized) {
+                custom_button.setButtonState(ButtonState.Loading)
                 download()
             } else {
                 Toast.makeText(this, R.string.option_none, Toast.LENGTH_SHORT).show()

@@ -76,6 +76,9 @@ class LoadingButton @JvmOverloads constructor(
         buttonState = state
     }
 
+    @JvmName("getButtonState1")
+    fun getButtonState(): ButtonState = buttonState
+
 
     override fun onDraw(canvas: Canvas?) {
         super.onDraw(canvas)

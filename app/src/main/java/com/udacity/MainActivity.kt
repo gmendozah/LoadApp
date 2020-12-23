@@ -54,8 +54,10 @@ class MainActivity : AppCompatActivity() {
 
         custom_button.setOnClickListener {
             if (this::selectedURL.isInitialized) {
-                custom_button.setButtonState(ButtonState.Loading)
-                download()
+                if (custom_button.getButtonState() != ButtonState.Loading) {
+                    custom_button.setButtonState(ButtonState.Loading)
+                    download()
+                }
             } else {
                 Toast.makeText(this, R.string.option_none, Toast.LENGTH_SHORT).show()
             }
@@ -81,25 +83,25 @@ class MainActivity : AppCompatActivity() {
 
     private fun download() {
         val request =
-            DownloadManager.Request(Uri.parse(selectedURL))
-                .setTitle(getString(R.string.app_name))
-                .setDescription(getString(R.string.app_description))
-                .setRequiresCharging(false)
-                .setAllowedOverMetered(true)
-                .setAllowedOverRoaming(true)
+                DownloadManager.Request(Uri.parse(selectedURL))
+                        .setTitle(getString(R.string.app_name))
+                        .setDescription(getString(R.string.app_description))
+                        .setRequiresCharging(false)
+                        .setAllowedOverMetered(true)
+                        .setAllowedOverRoaming(true)
 
         val downloadManager = getSystemService(DOWNLOAD_SERVICE) as DownloadManager
         downloadID =
-            downloadManager.enqueue(request)// enqueue puts download request in the queue.
+                downloadManager.enqueue(request)// enqueue puts download request in the queue.
     }
 
     companion object {
         private const val URL_GLIDE =
-            "https://github.com/bumptech/glide/archive/master.zip"
+                "https://github.com/bumptech/glide/archive/master.zip"
         private const val URL_RETROFIT =
-            "https://github.com/square/retrofit/archive/master.zip"
+                "https://github.com/square/retrofit/archive/master.zip"
         private const val URL_STARTER =
-            "https://github.com/udacity/nd940-c3-advanced-android-programming-project-starter/archive/master.zip"
+                "https://github.com/udacity/nd940-c3-advanced-android-programming-project-starter/archive/master.zip"
         private const val CHANNEL_ID = "channelId"
     }
 

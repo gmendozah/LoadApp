@@ -1,13 +1,17 @@
 package com.udacity
 
 import android.app.DownloadManager
+import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.PendingIntent
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import android.database.Cursor
+import android.graphics.Color
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.view.View
 import android.widget.RadioButton
@@ -28,9 +32,12 @@ class MainActivity : AppCompatActivity() {
     private lateinit var pendingIntent: PendingIntent
     private lateinit var action: NotificationCompat.Action
     private lateinit var selectedURL: String
+    private lateinit var selectedName: String
+    private lateinit var downloadManager: DownloadManager
 
     fun onRadioButtonClicked(view: View) {
         if (view is RadioButton) {
+            selectedName = view.text.toString()
             when (view.getId()) {
                 R.id.radioOptionGlide -> {
                     selectedURL = URL_GLIDE
@@ -49,8 +56,8 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         setSupportActionBar(toolbar)
-
         registerReceiver(receiver, IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE))
+        createChannel()
 
         custom_button.setOnClickListener {
             if (this::selectedURL.isInitialized) {
@@ -68,15 +75,31 @@ class MainActivity : AppCompatActivity() {
         override fun onReceive(context: Context?, intent: Intent?) {
             val id = intent?.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, -1)
             context?.let {
+                val query = DownloadManager.Query().setFilterById(id!!)
+                val cursor: Cursor = downloadManager.query(query)
+                if (cursor.moveToFirst() && cursor.count > 0) {
+                    val columnIndex = cursor.getColumnIndex(DownloadManager.COLUMN_STATUS)
+                    val status = when (cursor.getInt(columnIndex)) {
+                        DownloadManager.STATUS_FAILED -> getString(R.string.status_failed)
+                        DownloadManager.STATUS_PAUSED -> getString(R.string.status_paused)
+                        DownloadManager.STATUS_PENDING -> getString(R.string.status_pending)
+                        DownloadManager.STATUS_RUNNING -> getString(R.string.status_running)
+                        DownloadManager.STATUS_SUCCESSFUL -> getString(R.string.status_successful)
+                        else -> getString(R.string.status_none)
+                    }
+                    notificationManager = getSystemService(
+                            NotificationManager::class.java
+                    )
+                    // send notification
+                    notificationManager.sendNotification(
+                            selectedName,
+                            status,
+                            CHANNEL_ID,
+                            context,
+                    )
+                }
                 // set button state to completed
                 custom_button.setButtonState(ButtonState.Completed)
-                // send notification
-                /*notificationManager.sendNotification(
-                    "",
-                    "",
-                    CHANNEL_ID,
-                    context,
-                )*/
             }
         }
     }
@@ -90,7 +113,7 @@ class MainActivity : AppCompatActivity() {
                         .setAllowedOverMetered(true)
                         .setAllowedOverRoaming(true)
 
-        val downloadManager = getSystemService(DOWNLOAD_SERVICE) as DownloadManager
+        downloadManager = getSystemService(DOWNLOAD_SERVICE) as DownloadManager
         downloadID =
                 downloadManager.enqueue(request)// enqueue puts download request in the queue.
     }
@@ -103,6 +126,28 @@ class MainActivity : AppCompatActivity() {
         private const val URL_STARTER =
                 "https://github.com/udacity/nd940-c3-advanced-android-programming-project-starter/archive/master.zip"
         private const val CHANNEL_ID = "channelId"
+        private const val CHANNEL_NAME = "channelName"
     }
 
+    private fun createChannel() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            Timber.e("innitialized")
+            val notificationChannel = NotificationChannel(
+                    CHANNEL_ID,
+                    CHANNEL_NAME,
+                    NotificationManager.IMPORTANCE_HIGH).apply {
+                setShowBadge(false)
+            }
+
+            notificationChannel.enableLights(true)
+            notificationChannel.lightColor = Color.RED
+            notificationChannel.enableVibration(true)
+
+            notificationManager = getSystemService(
+                    NotificationManager::class.java
+            )
+            notificationManager.createNotificationChannel(notificationChannel)
+
+        }
+    }
 }
